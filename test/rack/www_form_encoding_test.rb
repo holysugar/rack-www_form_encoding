@@ -2,8 +2,11 @@ $LOAD_PATH.unshift File.expand_path('../../lib', __FILE__)
 require 'rack/www_form_encoding'
 require 'minitest/autorun'
 require 'rack/mock'
+require 'rack/test'
 
 class Rack::WWWFormEncodingTest < Minitest::Test
+  include Rack::Test::Methods
+
   def app(encoding = Encoding::Windows_31J)
     @app = lambda { |env|
       params = env['rack.input'].read
@@ -42,6 +45,10 @@ class Rack::WWWFormEncodingTest < Minitest::Test
   def test_it_ignores_conversion_if_unmatched_encoding_in_query_string
     res = Rack::MockRequest.new(app(Encoding::UTF_16)).post("/?#{input_non_utf8}")
     assert_equal 'name=%93%FA%96%7B%8C%EA&foo=bar', res.body
+  end
+
+  def test_upload_file
+    post "/", "file" => Rack::Test::UploadedFile.new("test/fixture/example.bin", "application/octed-stream")
   end
 
 end
