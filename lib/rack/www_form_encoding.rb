@@ -10,7 +10,7 @@ module Rack
     end
 
     def call(env)
-      post_body = env['rack.input'].string
+      post_body = env['rack.input'].read
       converted = convert_form(post_body, @encoding)
       env['rack.input'] = StringIO.new(converted)
 

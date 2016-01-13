@@ -6,7 +6,7 @@ require 'rack/mock'
 class Rack::WWWFormEncodingTest < Minitest::Test
   def app(encoding = Encoding::Windows_31J)
     @app = lambda { |env|
-      params = env['rack.input'].string
+      params = env['rack.input'].read
       query  = env['QUERY_STRING'] || ""
       [200, { 'Content-Type' => 'text/plain' }, [query + params]]
     }
